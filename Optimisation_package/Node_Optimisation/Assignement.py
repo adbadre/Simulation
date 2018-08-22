@@ -34,15 +34,15 @@ class Assignment:
                                                              " attribution " + str(self.physician_patient.loc[i, j]))
 
     # Objective function definition
-    def set_objective_function(self, w1, w2, w3):
+    def set_objective_function(self, w1, w2):
         self.model.setObjective(
 
-            w2 * quicksum(self.X[i, j, h] * self.costs_ambulance.loc[i, j]
+            w1 * quicksum(self.X[i, j, h] * self.costs_ambulance.loc[i, j]
                           for i in self.patient
                           for j in self.physician
                           for h in self.hospitals)
 
-            + w3 * quicksum((1 - self.X[i, j, h]) * self.costs_of_loosing_patient.loc[h, s]
+            + w2 * quicksum((1 - self.X[i, j, h]) * self.costs_of_loosing_patient.loc[h, s]
                             for h in self.hospitals
                             for s in self.service
                             for i in self.patient
@@ -88,7 +88,7 @@ class Assignment:
             if v.x == 1:
                 print(v.varName, v.x)
 
-
+# test
 if __name__ == "__main__":
     patient = ["Jack", "Franck", "Henry"]
     physician = ["DR henry", "DR Jack", "DR boo", "Dr lolo", "Dr booh", "Dr Libman", "Dr Niptuk"]
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                    bed_hospital, patient_by_physician
                    )
     a.set_variable()
-    a.set_objective_function(0.3, 0.3, 0.3)
+    a.set_objective_function(0.3, 0.3)
     a.set_constraints()
     a.model.optimize()
     a.display_sol()

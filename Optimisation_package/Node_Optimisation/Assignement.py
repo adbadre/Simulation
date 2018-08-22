@@ -88,7 +88,7 @@ class Assignment:
             if v.x == 1:
                 print(v.varName, v.x)
 
-# test
+# test main
 if __name__ == "__main__":
     patient = ["Jack", "Franck", "Henry"]
     physician = ["DR henry", "DR Jack", "DR boo", "Dr lolo", "Dr booh", "Dr Libman", "Dr Niptuk"]

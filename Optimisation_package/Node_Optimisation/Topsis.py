@@ -75,7 +75,7 @@ class Topsis:
         solution = self.solution_computation()
         return solution
 
-# test
+# test main
 if __name__=="__main__":
     t = Topsis(np.array([0.5, 0.5]), ["cosy", "beautifull"], ["DR henry", "DR Jack", "DR boo"], ["e1", "e2"])
     print(t.fit())

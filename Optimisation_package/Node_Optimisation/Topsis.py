@@ -20,6 +20,7 @@ class Topsis:
         self.S_worst = None
         self.closeness = []
 
+    # Criteria importance process
     def criteria_importance_process(self):
         self.criteria_importance_matrix = pd.DataFrame(
             np.random.randint(1, 5, size=(len(self.criteria), len(self.expert) + 1)),
@@ -30,6 +31,7 @@ class Topsis:
             (1 - self.alpha),
             self.criteria_importance_matrix[self.criteria_importance_matrix.columns.difference(['patient'])])
 
+    # Grading of the physician method ( random number for the moment)
     def physician_grading_process(self):
         for _ in self.physicians:
             self.physician_grading.append(
@@ -38,9 +40,11 @@ class Topsis:
                              index=self.criteria)
                 )
 
+    # Weight computation
     def weight_criteria_process(self):
         self.weight_criteria = self.criteria_importance_matrix.mean(axis=1)
 
+    # Decision matrix computation
     def decision_matrix_computation(self):
         for i in range(0, len(self.physicians)):
             self.weight_physicians.append(self.physician_grading[i].mean(axis=1))
@@ -51,6 +55,7 @@ class Topsis:
         self.decision_matrix = self.decision_matrix * self.weight_criteria
         self.decision_matrix = self.decision_matrix.T
 
+    # Compute the solutions (physician ranking)
     def solution_computation(self):
         '''Ideal and Negative Solution'''
         self.ideal_solution = self.decision_matrix.max(axis=1)
@@ -61,6 +66,7 @@ class Topsis:
         self.closeness = self.S_worst / (self.S_worst + self.S_top)
         return self.closeness
 
+    # Fit function
     def fit(self):
         self.criteria_importance_process()
         self.physician_grading_process()

@@ -4,6 +4,7 @@ from Node_Optimisation.Topsis import Topsis
 import numpy as np
 import pandas as pd
 
+
 class Assignment:
 
     def __init__(self, patient, physician, physician_matched_patient, hospitals, service,
@@ -15,7 +16,6 @@ class Assignment:
         self.hospitals = hospitals
         self.service = service
         self.costs_ambulance = costs_ambulance  # Matrix
-        # self.time_blocks = time_blocks
         self.severity_of_illness = severity_of_illness  # Vector patient
         self.costs_of_loosing_patient = costs_of_loosing_patient  # matrix hospital/service
         self.bed_hospital = bed_hospital  # matrix
@@ -23,22 +23,24 @@ class Assignment:
         self.model = Model("Patient Assignment")
         self.X = {}
 
+    # Variable definition
     def set_variable(self):
         for i in self.patient:
             for j in self.physician:
                 for h in self.hospitals:
                     self.X[i, j, h] = self.model.addVar(lb=0, ub=1, vtype=GRB.BINARY,
-                                                        name="patient "+i+" with physician "+j+" at hospital "
+                                                        name="patient " + i + " with physician " + j + " at hospital "
                                                              + h +
-                                                             " attribution "+str(self.physician_patient.loc[i, j]))
+                                                             " attribution " + str(self.physician_patient.loc[i, j]))
 
+    # Objective function definition
     def set_objective_function(self, w1, w2, w3):
         self.model.setObjective(
 
             w2 * quicksum(self.X[i, j, h] * self.costs_ambulance.loc[i, j]
-                            for i in self.patient
-                            for j in self.physician
-                            for h in self.hospitals)
+                          for i in self.patient
+                          for j in self.physician
+                          for h in self.hospitals)
 
             + w3 * quicksum((1 - self.X[i, j, h]) * self.costs_of_loosing_patient.loc[h, s]
                             for h in self.hospitals
@@ -46,6 +48,7 @@ class Assignment:
                             for i in self.patient
                             for j in self.physician))
 
+    # Constraint definitions
     def set_constraints(self):
         self.model.addConstrs(((quicksum(self.X[i, j, h]
                                          for i in self.patient
@@ -63,7 +66,7 @@ class Assignment:
                                for i in self.patient),
                               "Patient Must Be Assign Constraint")
 
-        self.model.addConstrs(((quicksum(self.X[i, j, h]*self.physician_patient.loc[i, j]
+        self.model.addConstrs(((quicksum(self.X[i, j, h] * self.physician_patient.loc[i, j]
                                          for h in self.hospitals
                                          for j in self.physician
                                          )
@@ -79,10 +82,12 @@ class Assignment:
                                for h in self.hospitals),
                               "Physician have a max number of  patient possible Constraint")
 
+    # Solution displaying
     def display_sol(self):
         for v in self.model.getVars():
-            if v.x==1:
+            if v.x == 1:
                 print(v.varName, v.x)
+
 
 if __name__ == "__main__":
     patient = ["Jack", "Franck", "Henry"]
@@ -100,7 +105,7 @@ if __name__ == "__main__":
                                      index=hospitals, columns=services)
 
     '''ambulance cost between network hospitals'''
-    ambulance_cost = pd.DataFrame(np.random.randint(100, 2000000, size=(len(patient), len(physician)))/100,
+    ambulance_cost = pd.DataFrame(np.random.randint(100, 2000000, size=(len(patient), len(physician))) / 100,
                                   index=patient, columns=physician)
     print(ambulance_cost)
     '''Topsis for each patient with physician with specialty. 0 for the others'''
@@ -125,7 +130,7 @@ if __name__ == "__main__":
     print(patient_physician)
     ''' cost of loosing a patient'''
     cost_loosing_patient = pd.DataFrame(np.random.randint(200, 1000, size=(len(hospitals), len(services))),
-                                        index=hospitals,columns=services)
+                                        index=hospitals, columns=services)
     for i in hospitals:
         for j in services:
             if hospitals_service.loc[i, j] == 0:

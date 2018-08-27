@@ -1,13 +1,12 @@
 import numpy as np
 import pandas as pd
-
+from Data_Manager.Hospital_Info_Class import HospitalInfo
 
 class Topsis:
 
-    def __init__(self, alpha, criteria, physicians, expert):
+    def __init__(self, alpha, criteria, physician_hospital, expert, patient_name, specialty):
         self.alpha = alpha
         self.criteria = list(criteria)
-        self.physicians = list(physicians)
         self.expert = list(expert)
         self.criteria_importance_matrix = None
         self.physician_grading = []
@@ -19,6 +18,10 @@ class Topsis:
         self.S_top = None
         self.S_worst = None
         self.closeness = []
+        self.patient_name = patient_name
+        self.specialty = specialty
+        self.physicians = physician_hospital.physician_request(specialty)
+        print(self.physicians)
 
     # Criteria importance process
     def criteria_importance_process(self):
@@ -73,10 +76,11 @@ class Topsis:
         self.weight_criteria_process()
         self.decision_matrix_computation()
         solution = self.solution_computation()
-        return solution
+        p1_fit = pd.DataFrame(solution, columns=[self.patient_name])
+        mask = p1_fit.loc[:, self.patient_name] > 0.5
+        mask2 = p1_fit.loc[:, self.patient_name] <= 0.5
+        p1_fit.loc[mask,  self.patient_name] = 1
+        p1_fit.loc[mask2, self.patient_name] = 0
+        return p1_fit
 
-# test main
-if __name__=="__main__":
-    t = Topsis(np.array([0.5, 0.5]), ["cosy", "beautifull"], ["DR henry", "DR Jack", "DR boo"], ["e1", "e2"])
-    print(t.fit())
 

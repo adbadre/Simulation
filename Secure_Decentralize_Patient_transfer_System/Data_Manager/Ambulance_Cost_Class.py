@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 
 
+
+
 class AmbulanceCost:
 
     def __init__(self, patient, hospital):
@@ -10,3 +12,6 @@ class AmbulanceCost:
 
     def __getitem__(self, item):
         return self.ambulance_cost[item]
+
+    def __len__(self):
+        return len(self.ambulance_cost)

@@ -10,3 +10,6 @@ class SeverityOfIllness:
 
     def __getitem__(self, item):
         return self.illness_severity[item]
+
+    def __len__(self):
+        return len(self.illness_severity)

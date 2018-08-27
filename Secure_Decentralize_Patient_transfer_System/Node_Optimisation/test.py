@@ -50,10 +50,10 @@ if __name__ == "__main__":
     patient_by_physician = NumberOfPatientPerPhysician()
     print(patient_by_physician)
 
-    a = Assignment(patient, physician.physician, patient_physician,
+    a = Assignment(patient, physician, patient_physician,
                    hospitals, hospitals_service, ambulance_cost.ambulance_cost,
-                   illness_severity.illness_severity, cost_loosing_patient,
-                   bed_hospital, patient_by_physician.patient_by_physician,
+                   illness_severity, cost_loosing_patient,
+                   bed_hospital, patient_by_physician,
                    hospital_info.physician_hospital_service)
     a.fit(0.3)
 

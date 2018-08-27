@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 
 
 class PhysicianNetwork:
@@ -9,3 +7,6 @@ class PhysicianNetwork:
 
     def __getitem__(self, item):
         return self.physician[item]
+
+    def __len__(self):
+        return len(self.physician)

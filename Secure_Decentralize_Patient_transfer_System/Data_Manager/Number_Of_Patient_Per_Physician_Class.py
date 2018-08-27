@@ -11,3 +11,6 @@ class NumberOfPatientPerPhysician:
 
     def __getitem__(self, item):
         return self.patient_by_physician[item]
+
+    def __len__(self):
+        return len(self.patient_by_physician)

@@ -1,7 +1,4 @@
 from gurobipy import *
-import numpy as np
-import pandas as pd
-
 
 
 class Assignment:

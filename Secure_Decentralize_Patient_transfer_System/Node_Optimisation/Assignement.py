@@ -5,7 +5,7 @@ class Assignment:
 
     def __init__(self, patient, physician, physician_matched_patient, hospitals, service,
                  costs_ambulance, severity_of_illness,
-                 costs_of_loosing_patient, bed_hospital, patient_by_physician,physician_hospital):
+                 costs_of_loosing_patient, bed_hospital, patient_by_physician, physician_hospital):
         self.patient = patient
         self.physician = physician
         self.physician_patient = physician_matched_patient  # Matrix
@@ -31,7 +31,7 @@ class Assignment:
                                                              " attribution " + str(self.physician_patient.loc[i, j]))
 
     # Objective function definition
-    def set_objective_function(self, w1): #, sigma, F, Z, Y):
+    def set_objective_function(self, w1):  # , sigma, F, Z, Y):
         self.model.setObjective(
 
             w1 * quicksum(self.X[i, j, h] * self.costs_ambulance.loc[i, h]
@@ -95,9 +95,12 @@ class Assignment:
 
     # Solution displaying
     def display_sol(self):
-        for v in self.model.getVars():
-            if v.x == 1:
-                print(v.varName, v.x)
+        try:
+            for v in self.model.getVars():
+                if v.x == 1:
+                    print(v.varName, v.x)
+        except Exception:
+            print("No Solution")
 
     def fit(self, w1):
         self.set_variable()
@@ -105,5 +108,3 @@ class Assignment:
         self.set_constraints()
         self.model.optimize()
         self.display_sol()
-
-

@@ -1722,3 +1722,137 @@ Solution count 2: 1.19412e+07 1.22909e+07
 
 Optimal solution found (tolerance 1.00e-04)
 Best objective 1.194118348900e+07, best bound 1.194118348900e+07, gap 0.0000%
+
+Gurobi 8.0.1 (linux64, Python) logging started Wed Aug 29 17:34:33 2018
+
+
+Gurobi 8.0.1 (linux64, Python) logging started Wed Aug 29 18:07:34 2018
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 182 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [6e+02, 4e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 6e+02]
+Found heuristic solution: objective 1.194482e+07
+Presolve removed 30 rows and 54 columns
+Presolve time: 0.01s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.04 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 2: 1.19411e+07 1.19448e+07 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.194113143600e+07, best bound 1.194113143600e+07, gap 0.0000%
+
+Gurobi 8.0.1 (linux64, Python) logging started Wed Aug 29 19:15:18 2018
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 174 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [5e+02, 3e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+02]
+Presolve removed 3 rows and 0 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+Gurobi 8.0.1 (linux64, Python) logging started Wed Aug 29 19:16:39 2018
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 174 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [4e+02, 3e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 3e+02]
+Presolve removed 2 rows and 0 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+Gurobi 8.0.1 (linux64, Python) logging started Wed Aug 29 19:16:43 2018
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 174 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [6e+02, 3e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+02]
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+
+Gurobi 8.0.1 (linux64, Python) logging started Wed Aug 29 19:16:47 2018
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 182 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [4e+02, 4e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+02]
+Found heuristic solution: objective 1.193945e+07
+Presolve removed 30 rows and 54 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 1: 1.19395e+07 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.193945480900e+07, best bound 1.193945480900e+07, gap 0.0000%
+
+Gurobi 8.0.1 (linux64, Python) logging started Mon Sep 10 17:20:12 2018
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 178 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [2e+03, 3e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 5e+02]
+Found heuristic solution: objective 1.193421e+07
+Presolve removed 30 rows and 54 columns
+Presolve time: 0.28s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.67 seconds
+Thread count was 1 (of 4 available processors)
+
+Solution count 1: 1.19342e+07 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.193421177900e+07, best bound 1.193421177900e+07, gap 0.0000%

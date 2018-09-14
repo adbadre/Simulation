@@ -9,7 +9,7 @@ class HospitalInfo:
         self.hospitals = ['Chicago', 'Milwaukee', 'Springfield']
         self.services = ["Cardiology", "Oncology"]
         self.hospitals_service = pd.DataFrame(data=np.array([[1, 1, 0], [0, 1, 1]]).T,
-                                              index=self.hospitals, columns=self.services)
+                                              index=self.hospitals, columns=self.services) # wont be in at the end
         self.physician_hospital_service = pd.DataFrame(data=np.array([[0, 0, 0, 1, 0, 0],
                                                                       [1, 0, 0, 0, 0, 0],
                                                                       [0, 0, 1, 0, 0, 0],

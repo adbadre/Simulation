@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 
 
-
-
 class AmbulanceCost:
 
     def __init__(self, patient, hospital):

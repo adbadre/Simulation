@@ -4,9 +4,10 @@ import numpy as np
 
 class HospitalInfo:
 
-    def __init__(self):
-        self.physician = ["DR henry", "DR Jack", "DR boo", "Dr lolo", "Dr Libman", "Dr Niptuk"]
-        self.hospitals = ['Chicago', 'Milwaukee', 'Springfield']
+    def __init__(self, w3):
+        self.physician = range(0, 6)
+        self.w3 = w3
+        self.hospitals = [self.w3.eth.accounts[0], self.w3.eth.accounts[1], self.w3.eth.accounts[2]]
         self.services = ["Cardiology", "Oncology"]
         self.hospitals_service = pd.DataFrame(data=np.array([[1, 1, 0], [0, 1, 1]]).T,
                                               index=self.hospitals, columns=self.services) # wont be in at the end
@@ -39,6 +40,6 @@ class HospitalInfo:
     def physician_request(self, specialty):
         idx = pd.IndexSlice
         data = self.physician_hospital_service[self.physician_hospital_service.loc[idx[:, specialty], :]>0.5]
-        unic= data.apply(pd.Series.nunique)
+        unic = data.apply(pd.Series.nunique)
         data=data.drop(unic[unic==0].index,axis=1)
         return data.columns.values

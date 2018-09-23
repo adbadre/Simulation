@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from Data_Manager.Hospital_Info_Class import HospitalInfo
+from Data_Manager.SystemInfo import HospitalInfo
 
 class Topsis:
 

@@ -1,11 +1,11 @@
 
 from Node_Optimisation.Topsis import Topsis
-from Node_Optimisation.Assignement import Assignment
+from Mining.Assignement import Assignment
 import numpy as np
 import pandas as pd
 from Data_Manager.Ambulance_Cost_Class import AmbulanceCost
 from Data_Manager.Severity_Of_Illness_Class import SeverityOfIllness
-from Data_Manager.Hospital_Info_Class import HospitalInfo
+from Data_Manager.SystemInfo import HospitalInfo
 from Data_Manager.Number_Of_Patient_Per_Physician_Class import NumberOfPatientPerPhysician
 from Data_Manager.Physician_Network_Class import PhysicianNetwork
 from Data_Manager.Patient_Handler_Class import PatientHandler

@@ -12,7 +12,6 @@ contract TransfertBlock{
     event ReadyForMining(string message);
     event TransactionMined(string message);
 
-
     mapping(address => bool) hospital_address_real;
     address[] hospital_address_tab_real;
 
@@ -27,13 +26,13 @@ contract TransfertBlock{
 
     mapping (uint128 => uint128[]) ambulance_cost;
 
-    mapping (uint128 => uint128) number_of_patient_per_physician;
-
     mapping (uint128 => uint128) severity_of_illness;
 
     mapping (uint128 => uint128[]) patient_matched_physician;
 
-    mapping (address => Service_Cost_Struct) cost_of_loosing_patient;
+    mapping (address => mapping(uint128 =>uint128)) cost_of_loosing_patient;
+
+    mapping(address => uint128) number_of_bed_hospital;
 
     constructor(address[] new_hospital_address_tab_real) public {
         hospital_address_tab_real=new_hospital_address_tab_real;
@@ -64,14 +63,17 @@ contract TransfertBlock{
     }
 
     function set_ambulance_cost(uint128 patient_id, uint128[] cost)public {
-       require(patients[patient_id]);
+       //require(patients[patient_id]);
+       assert(cost.length==hospital_address_tab_real.length);
        ambulance_cost[patient_id]= cost;
     }
 
-    function set_number_of_patient_per_physician(uint128 physician,uint128 number) public{
-        require(hospital_address_real[msg.sender]);
-        number_of_patient_per_physician[physician]=number;
+     function  set_number_of_bed_hospital(address hospital, uint128 number_of_bed)public {
+       require(hospital_address_real[msg.sender]);
+       number_of_bed_hospital[hospital]=number_of_bed;
     }
+
+
 
     function set_previous_block(address new_previous_block) public{
         require(hospital_address_real[msg.sender]);
@@ -86,6 +88,11 @@ contract TransfertBlock{
     function set_severity_of_illness_by_id(uint128 patient_id,uint128 severity_of_illness_number)public {
           require(hospital_address_real[msg.sender]);
           severity_of_illness[patient_id]=severity_of_illness_number;
+    }
+
+    function set_cost_of_loosing_patient_by_id(address hospital, uint128 service_id, uint128 cost) public {
+        require(hospital_address_real[msg.sender]);
+        cost_of_loosing_patient[hospital][service_id]=cost;
     }
 
     function get_patients() public constant returns(uint128[]){
@@ -106,16 +113,20 @@ contract TransfertBlock{
     }
 
 
-    function get_number_of_patient_per_physician_by_id(uint128 physician_id) public constant returns(uint128){
-       return number_of_patient_per_physician[physician_id];
-    }
-
     function get_severity_of_illness_by_id(uint128 patiend_id) public constant returns(uint128){
        return severity_of_illness[patiend_id];
     }
 
     function get_number_of_patient_matched_physician_by_id(uint128 patient_id) public constant returns(uint128[]){
        return patient_matched_physician[patient_id];
+    }
+
+    function get_cost_of_loosing_patient_by_id(address hospital, uint128 service) public constant returns(uint128){
+        return cost_of_loosing_patient[hospital][service];
+    }
+
+    function  get_number_of_bed_hospital(address hospital)public constant returns(uint128) {
+       return number_of_bed_hospital[hospital];
     }
 
     function solution_filled() public{

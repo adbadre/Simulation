@@ -1,71 +1,113 @@
-import json
-import web3
-
 from web3 import Web3
-from solc import compile_source
-from web3.contract import ConciseContract
-
-my_provider = Web3.IPCProvider('/home/adrien/blockchain/geth.ipc')
-w3 = Web3(my_provider)
-print(w3.eth.accounts)
-
-
-contract_source_code = '''
-pragma solidity ^0.4.21;
-
-contract Greeter {
-    string public greeting;
-
-    function Greeter() public {
-        greeting = 'Hello';
-    }
-
-    function setGreeting(string _greeting) public {
-        greeting = _greeting;
-    }
-
-    function greet() view public returns (string) {
-        return greeting;
-    }
-}
-'''
+from BlockchainService.LatestBlock import LatestBlock
+from BlockchainService.PhysicianHospitalSpecialty import PhysicianHospitalService
+from BlockchainService.TransfertBlock import TransfertBlock
+from Data_Manager.SystemInfo import HospitalInfo
+from Data_Manager.Ambulance_Cost_Class import AmbulanceCost
+from pandas import IndexSlice
+import time
+import numpy as np
+from Node_Optimisation.Topsis import Topsis
+import pandas as pd
+from BlockchainService.ContractFactory import ContractFactory
 
 
-compiled_sol = compile_source(contract_source_code) # Compiled source code
-contract_interface = compiled_sol['<stdin>:Greeter']
+if __name__ == "__main__":
+    w3 = Web3(Web3.IPCProvider('\\\\.\\pipe\\geth.ipc'))
+    w3.personal.unlockAccount(w3.eth.accounts[0], '')
+    '''
+    # Latest Block Contract Test
+    test = LatestBlock.get_instance(w3)
+    test.set_new_address(w3.eth.accounts[0])
+    print(test.get_new_address())
+   '''
+    # Physician Hospital Service Test
+    test2 = PhysicianHospitalService.get_instance(w3)
+    hospitalInfo = HospitalInfo(w3)
+    physician_tab = []
 
-w3.eth.defaultAccount = w3.eth.accounts[0]
-w3.personal.unlockAccount(w3.eth.accounts[0], '')
-# Instantiate and deploy contract
-Greeter = w3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
-# Submit the transaction that deploys the contract
-tx_hash = Greeter.constructor().transact()
+    # Set physician
+    i = 0
+    for physician in hospitalInfo.physician:
+        physician_tab.append(i)
+        test2.set_number_of_patient_per_physician(i, 15)
+        i += 1
+    test2.set_physicians_tab(physician_tab)
 
-# Wait for the transaction to be mined, and get the transaction receipt
-tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash, timeout=1555555555555555555555555555555555555555555555555555555555555)
+    # set the matrix hospital service physician
+    idx = IndexSlice
 
-# Create the contract instance with the newly-deployed address
-greeter = w3.eth.contract(
-    address=tx_receipt.contractAddress,
-    abi=contract_interface['abi'],
-)
+    for hospital in hospitalInfo.hospitals:
+        j = 0
+        test2.set_hospital_service(hospital, list(hospitalInfo.hospitals_service.loc[hospital, :]))
+        for service in hospitalInfo.services:
 
-# Display the default greeting from the contract
-print('Default contract greeting: {}'.format(
-    greeter.functions.greet().call()
-))
+            print(list(hospitalInfo.physician_hospital_service.loc[idx[hospital, service], :]))
+            test2.set_hospital_service_physician(list(hospitalInfo.physician_hospital_service
+                                                      .loc[idx[hospital, service], :]),
+                                                 hospital,
+                                                 j)
+            j += 1
+    print("Set")
+    time.sleep(30)
+    print(test2.get_physician_service_hospital_by_service(1))
+    '''
+    for hospital in hospitalInfo.hospitals:
+        j = 0
+        for service in hospitalInfo.services:
+            print(test2.get_physician_service_hospital_by_hospital(hospital, j))
+            j += 1
+    
+    time.sleep(20)
+    print(test2.get_physicians_tab())
+    for i in hospitalInfo.physician:
+        print(test2.get_number_of_patient_per_physician_by_id(i))
+    '''
+    '''
+    #Transfert Block Test
+    hospitalInfo = HospitalInfo(w3)
+    ambulance_info=AmbulanceCost(range(0, 9), range(0, 3))
+    transfertBLockObject = TransfertBlock(w3)
 
-print('Setting the greeting to Nihao...')
-tx_hash = greeter.functions.setGreeting('Nihao').transact()
+    # Test Patient
+    for i in range(0, 9):
+        transfertBLockObject.add_patient(i)
+    time.sleep(20)
 
-# Wait for transaction to be mined...
-w3.eth.waitForTransactionReceipt(tx_hash)
+    # Test Physician
+    for i in range(0, 9):
+        number = Topsis(np.array([0.5, 0.8]), ["cosy", "beautiful"], hospitalInfo, ["e1"], i, "Oncology").fit()
+        patient_physician = pd.DataFrame(index=range(0, 6))
+        patient_physician = pd.concat([patient_physician, number], axis=1, sort=True).fillna(0).T
+        transfertBLockObject.set_patient_matched_physician(i, [int(x) for x in list(patient_physician.loc[i, :])])
+        transfertBLockObject.set_severity_of_illness_by_id(i, 20)
+    time.sleep(20)
 
-# Display the new greeting value
-print('Updated contract greeting: {}'.format(
-    greeter.functions.greet().call()
-))
+    # Test Hospital
+    for hospital in hospitalInfo.hospitals:
+        transfertBLockObject.add_hospital(hospital)
 
-# When issuing a lot of reads, try this more concise reader:
-reader = ConciseContract(greeter)
-assert reader.greet() == "Nihao"
+    # Test Cost Ambulance
+    cost=ambulance_info.ambulance_cost
+    time.sleep(20)
+    for patient in range(0, 9):
+        transfertBLockObject.set_ambulance_cost(patient, list(cost.loc[patient, :]))
+    time.sleep(20)
+
+    print(transfertBLockObject.get_patients())
+    print(transfertBLockObject.get_hospitals())
+    for patient in range(0, 9):
+        print(transfertBLockObject.get_ambulance_cost_by_id(patient))
+
+    for i in range(0, 9):
+        print(transfertBLockObject.get_number_of_patient_matched_physician_by_id(i))
+        print("bouf")
+        print(transfertBLockObject.get_severity_of_illness_by_id(i))
+
+    '''
+    '''
+    # Test Filtres
+    myfilter = transfertBLockObject.EventFilter('ReadyForMining')
+    eventlist = myfilter.get_all_entries()
+    print(eventlist)
+    '''

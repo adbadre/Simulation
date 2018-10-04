@@ -20,9 +20,8 @@ class Topsis:
         self.closeness = []
         self.patient_name = patient_name
         self.specialty = specialty
-        self.physicians = physician_hospital.physician_request(specialty)
+        self.physicians = physician_hospital
         print(self.physicians)
-
     # Criteria importance process
     def criteria_importance_process(self):
         self.criteria_importance_matrix = pd.DataFrame(

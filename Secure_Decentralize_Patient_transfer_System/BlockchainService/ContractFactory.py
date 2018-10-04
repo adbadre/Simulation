@@ -18,7 +18,7 @@ class ContractFactory:
 
     def compile_contract(self):
         self.compiled_contract = compile_source(self.contract_code)
-        print(" Contract Compiled")
+        print("Contract Compiled")
 
     def contract_interfacer(self):
         self.contract_interface = self.compiled_contract['<stdin>:' + str(self.contract_name)]

@@ -13,31 +13,23 @@ class BlockchainGenesis:
 
     def set_latest_block(self, w3):
         # Latest Block Contract
-        with open(
-                "C:\\Users\\badre\\OneDrive\\Bureau\\theses\\Secure_Decentralize_Patient_transfer_System\\Blockchain_Contracts\\LatestBlock.sol") as file:
-            contract_code = file.read()
-        contract = ContractFactory(contract_code, 'LatestBLock', w3.eth.accounts[0], w3)
-        contract_info = contract.deploy_contract('')
-        self.LatestBlock = LatestBlock.get_instance(contract_info[0], contract_info[1], w3)
+        self.LatestBlock = LatestBlock.get_instance(w3)
 
     def set_physician_hospital_service(self, w3, system_info):
         # Physician Hospital Service
-        with open(
-                "C:\\Users\\badre\\OneDrive\\Bureau\\theses\\Secure_Decentralize_Patient_transfer_System\\"
-                + "Blockchain_Contracts\\PhysicianHospitalServiceContract.sol") as file:
-            contract_code = file.read()
-        contract = ContractFactory(contract_code, 'PhysicianHospitalServiceContract', w3.eth.accounts[0], w3)
-        contract_info = contract.deploy_contract('')
-        self.PhysicianHospitalService = PhysicianHospitalService.get_instance(contract_info[0], contract_info[1], w3)
+        self.PhysicianHospitalService = PhysicianHospitalService.get_instance(w3)
         physician_tab = []
         # Set physician
         for physician in system_info.physician:
             physician_tab.append(physician)
+            self.PhysicianHospitalService.set_number_of_patient_per_physician(physician, 15)
         self.PhysicianHospitalService.set_physicians_tab(physician_tab)
         # Set the matrix hospital service physician
         idx = IndexSlice
         for hospital in system_info.hospitals:
             j = 0
+            self.PhysicianHospitalService.set_hospital_service(hospital, list(system_info.hospitals_service
+                                                                              .loc[hospital, :]))
             for service in system_info.services:
                 print(list(system_info.physician_hospital_service.loc[idx[hospital, service], :]))
                 self.PhysicianHospitalService.set_hospital_service_physician(list(system_info

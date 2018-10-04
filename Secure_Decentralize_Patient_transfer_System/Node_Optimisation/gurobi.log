@@ -1856,3 +1856,23 @@ Solution count 1: 1.19342e+07
 
 Optimal solution found (tolerance 1.00e-04)
 Best objective 1.193421177900e+07, best bound 1.193421177900e+07, gap 0.0000%
+
+Gurobi 8.0.1 (win64, Python) logging started 09/10/18 18:32:30
+
+Academic license - for non-commercial use only
+Optimize a model with 30 rows, 54 columns and 170 nonzeros
+Variable types: 0 continuous, 54 integer (54 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [3e+02, 3e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+02]
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 8 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -

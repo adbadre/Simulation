@@ -47,6 +47,7 @@ class Simulation:
         physicians = self.PhysicianHospitalService.get_physicians_tab()
         service_requested = self.SystemInfo.hospitals_service.loc[self.w3.eth.accounts[hospital_number], 0]
         service = 0
+        self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
         if service_requested == 0:
             service = 1
         transfer_block.add_service_count(service, number_of_patient)
@@ -186,7 +187,7 @@ class Simulation:
 
         physician_service = [physician_service0, physician_service1]
         print(physician_service)
-
+        self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
         self.w3.miner.stop()
         a = Assignment(patients, physicians, patient_matched_physician,
                        hospitals, range(len(hospital_service[0])), ambulance_cost,
@@ -197,7 +198,7 @@ class Simulation:
         a.fit(0.5)
 
         print("Mining Over")
-        self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
+
         self.w3.miner.start(8)
 
     def run_assignment_rate(self):

@@ -2,7 +2,7 @@ from web3 import Web3
 from BlockchainService.LatestBlock import LatestBlock
 from BlockchainService.PhysicianHospitalSpecialty import PhysicianHospitalService
 from BlockchainService.TransfertBlock import TransfertBlock
-from Data_Manager.SystemInfo import HospitalInfo
+from Data_Manager.SystemInfo import SystemInfo
 from Data_Manager.Ambulance_Cost_Class import AmbulanceCost
 from pandas import IndexSlice
 import time
@@ -18,12 +18,12 @@ if __name__ == "__main__":
     '''
     # Latest Block Contract Test
     test = LatestBlock.get_instance(w3)
-    test.set_new_address(w3.eth.accounts[0])
+    test.set_new_latest_block(w3.eth.accounts[0])
     print(test.get_new_address())
    '''
     # Physician Hospital Service Test
-    test2 = PhysicianHospitalService.get_instance(w3)
-    hospitalInfo = HospitalInfo(w3)
+    hospitalInfo = SystemInfo(w3, 5)
+    '''test2 = PhysicianHospitalService.get_instance(w3,hospitalInfo.hospitals)
     physician_tab = []
 
     # Set physician
@@ -38,19 +38,19 @@ if __name__ == "__main__":
     idx = IndexSlice
 
     for hospital in hospitalInfo.hospitals:
-        j = 0
         test2.set_hospital_service(hospital, list(hospitalInfo.hospitals_service.loc[hospital, :]))
         for service in hospitalInfo.services:
-
             print(list(hospitalInfo.physician_hospital_service.loc[idx[hospital, service], :]))
             test2.set_hospital_service_physician(list(hospitalInfo.physician_hospital_service
                                                       .loc[idx[hospital, service], :]),
                                                  hospital,
-                                                 j)
-            j += 1
+                                                 service)
+    
     print("Set")
-    time.sleep(30)
+    time.sleep(20)
+    print(test2.get_physician_service_hospital_by_service(0))
     print(test2.get_physician_service_hospital_by_service(1))
+    '''
     '''
     for hospital in hospitalInfo.hospitals:
         j = 0
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     '''
     '''
     #Transfert Block Test
-    hospitalInfo = HospitalInfo(w3)
+    hospitalInfo = SystemInfo(w3)
     ambulance_info=AmbulanceCost(range(0, 9), range(0, 3))
     transfertBLockObject = TransfertBlock(w3)
 

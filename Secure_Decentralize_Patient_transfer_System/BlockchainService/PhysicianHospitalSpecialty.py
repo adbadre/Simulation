@@ -10,15 +10,15 @@ class PhysicianHospitalService:
     @staticmethod
     def get_instance(*args):
         if PhysicianHospitalService.__contract_object is None:
-            PhysicianHospitalService(args[0])
+            PhysicianHospitalService(args[0], args[1])
         return PhysicianHospitalService.__PhysicianHospitalService_object
 
-    def __init__(self, w3):
+    def __init__(self, w3,hospital_accounts):
         PhysicianHospitalService.__w3 = w3
         with open(
                 "C:\\Users\\badre\\OneDrive\\Bureau\\theses\\Secure_Decentralize_Patient_transfer_System\\Blockchain_Contracts\\PhysicianHospitalServiceContract.sol") as file:
             contract_code = file.read()
-        contract = ContractFactory(contract_code, 'PhysicianHospitalServiceContract', w3.eth.accounts[0], w3)
+        contract = ContractFactory(contract_code, 'PhysicianHospitalServiceContract', w3.eth.accounts[0], w3,hospital_accounts)
         PhysicianHospitalService.__contract_info = contract.deploy_contract('')
         PhysicianHospitalService.__contract_object = w3.eth.contract(address=PhysicianHospitalService.__contract_info[0]
                                                                      , abi=PhysicianHospitalService.__contract_info[1])

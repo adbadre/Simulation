@@ -1,10 +1,11 @@
 import numpy as np
 from Node_Optimisation.Topsis import Topsis
-from Data_Manager.SystemInfo import HospitalInfo
+from Data_Manager.SystemInfo import SystemInfo
 from web3 import Web3
 import pandas as pd
 from Data_Manager.Ambulance_Cost_Class import AmbulanceCost
 from gurobipy import *
+import random
 
 
 def convert(s):
@@ -14,7 +15,7 @@ def convert(s):
 w3 = Web3(Web3.IPCProvider('\\\\.\\pipe\\geth.ipc'))
 w3.personal.unlockAccount(w3.eth.accounts[0], '')
 
-'''hospitalInfo= HospitalInfo(w3)
+'''hospitalInfo= SystemInfo(w3)
 
 number= Topsis(np.array([0.5, 0.8]), ["cosy", "beautiful"], hospitalInfo, ["e1", "e2"], 1, "Oncology").fit()
 
@@ -27,6 +28,7 @@ print(w3.eth.accounts[0])
 
 a=AmbulanceCost([1],[1,2,3])
 print(list(a.ambulance_cost.values[0]))
+'''
 '''
 # Create a new model
 m = Model("mip1")
@@ -51,6 +53,20 @@ m.optimize()
 for v in m.getVars():
     print(v.varName, v.x)
 
-print('Obj:', m.objVal)
+print(len(w3.eth.accounts))
+'''
+a = np.random.randint(2,size=(10,))
+number_even = (random.randint(0, int(5/2))) * 2
+
+b = np.zeros(5 ,dtype=int)
+print(a[0])
+if a[0] == 0:
+    number = (random.randint(0, int(5 / 2))) * 2 + 1
+else:
+    number=(random.randint(0, int(5 / 2))) * 2
+print(number)
+b[number]=1
+
+print(b)
 
 

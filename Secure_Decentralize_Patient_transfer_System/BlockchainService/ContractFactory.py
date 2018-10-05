@@ -3,7 +3,7 @@ from solc import compile_source
 
 class ContractFactory:
 
-    def __init__(self, contract_file_content, contract_name, account, w3):
+    def __init__(self, contract_file_content, contract_name, account, w3,hospital_accounts):
         self.contract = None
         self.contract_code = str(contract_file_content)
         self.contract_name = contract_name
@@ -14,11 +14,11 @@ class ContractFactory:
         self.transaction_hash = None
         self.transaction_receipt = None
         self.contract_object = None
-        self.hospital_accounts = [self.w3.eth.accounts[0], self.w3.eth.accounts[1], self.w3.eth.accounts[2]]
+        self.hospital_accounts = hospital_accounts
 
     def compile_contract(self):
         self.compiled_contract = compile_source(self.contract_code)
-        print("Contract Compiled")
+        print("Contract Compiled " + self.contract_name)
 
     def contract_interfacer(self):
         self.contract_interface = self.compiled_contract['<stdin>:' + str(self.contract_name)]
@@ -32,11 +32,12 @@ class ContractFactory:
                                              bytecode=self.contract_interface['bin'])
         self.transaction_hash = self.contract.constructor(hospital_address).transact()
         self.transaction_receipt = self.w3.eth.waitForTransactionReceipt(self.transaction_hash, timeout=600)
-        print("Contract Mined")
+        print("Contract Mined " + self.contract_name)
 
     def instantiate_contract_object(self):
         self.contract_object = self.w3.eth.contract(address=self.transaction_receipt.contractAddress,
                                                     abi=self.contract_interface['abi'])
+
 
     def deploy_contract(self, password):
         self.compile_contract()

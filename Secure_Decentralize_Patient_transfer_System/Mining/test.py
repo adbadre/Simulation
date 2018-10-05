@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from Data_Manager.Ambulance_Cost_Class import AmbulanceCost
 from Data_Manager.Severity_Of_Illness_Class import SeverityOfIllness
-from Data_Manager.SystemInfo import HospitalInfo
+from Data_Manager.SystemInfo import SystemInfo
 from Data_Manager.Number_Of_Patient_Per_Physician_Class import NumberOfPatientPerPhysician
 from Data_Manager.Physician_Network_Class import PhysicianNetwork
 from Data_Manager.Patient_Handler_Class import PatientHandler
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     time_period = []
     for k in range(0, 200):
         time_period.append(k+1)
-        hospital_info = HospitalInfo(Web3(Web3.IPCProvider('\\\\.\\pipe\\geth.ipc')))
+        hospital_info = SystemInfo(Web3(Web3.IPCProvider('\\\\.\\pipe\\geth.ipc')))
         patient = PatientHandler()
         physician = hospital_info.physician
 

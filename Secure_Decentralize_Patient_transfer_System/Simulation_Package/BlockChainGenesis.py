@@ -11,13 +11,13 @@ class BlockchainGenesis:
         self.PhysicianHospitalService = None
         pass
 
-    def set_latest_block(self, w3):
+    def set_latest_block(self, w3, system_info):
         # Latest Block Contract
-        self.LatestBlock = LatestBlock.get_instance(w3)
+        self.LatestBlock = LatestBlock.get_instance(w3, system_info.hospitals)
 
     def set_physician_hospital_service(self, w3, system_info):
         # Physician Hospital Service
-        self.PhysicianHospitalService = PhysicianHospitalService.get_instance(w3)
+        self.PhysicianHospitalService = PhysicianHospitalService.get_instance(w3, system_info.hospitals)
         physician_tab = []
         # Set physician
         for physician in system_info.physician:
@@ -31,7 +31,6 @@ class BlockchainGenesis:
             self.PhysicianHospitalService.set_hospital_service(hospital, list(system_info.hospitals_service
                                                                               .loc[hospital, :]))
             for service in system_info.services:
-                print(list(system_info.physician_hospital_service.loc[idx[hospital, service], :]))
                 self.PhysicianHospitalService.set_hospital_service_physician(list(system_info
                                                                                   .physician_hospital_service
                                                                                   .loc[idx[hospital, service], :]),
@@ -41,6 +40,6 @@ class BlockchainGenesis:
 
     def genesis(self, w3, hospital_info):
         w3.personal.unlockAccount(w3.eth.accounts[0], '')
-        self.set_latest_block(w3)
+        self.set_latest_block(w3, hospital_info)
         self.set_physician_hospital_service(w3, hospital_info)
         return {'latest_block': self.LatestBlock, 'physician_hospital_service': self.PhysicianHospitalService}

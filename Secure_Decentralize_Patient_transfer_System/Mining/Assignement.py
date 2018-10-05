@@ -18,7 +18,7 @@ class Assignment:
         self.physician_hospital = physician_hospital
         self.minimum_acceptance_rate = minimum_accaptance_rate
         self.model = Model("Patient Assignment")
-        self.model.setParam(GRB.Param.Threads, 2)
+        self.model.setParam(GRB.Param.Threads, 8)
         self.X = {}
 
     # Variable definition

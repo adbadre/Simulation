@@ -14,22 +14,24 @@ contract LatestBLock{
         }
     }
 
-    function set_new_address(address new_latest_block) public {
-        require(hospital_address[msg.sender]==true);
+    function set_new_latest_block_address(address new_latest_block) public {
+        require(hospital_address[msg.sender]);
         latest_block=new_latest_block;
     }
 
-    function set_potential_block(address new_potential_block) public {
-        require(hospital_address[msg.sender]==true);
+    function set_potential_block_address(address new_potential_block) public {
+        require(hospital_address[msg.sender]);
         potential_block=new_potential_block;
     }
 
-    function get_new_address() public constant returns(address) {
+
+    function get_latest_block_address() public constant returns(address) {
        return latest_block;
     }
 
-    function get_potential_block() public constant returns(address){
+    function get_potential_block_address() public constant returns(address){
         return potential_block;
     }
+
 
 }

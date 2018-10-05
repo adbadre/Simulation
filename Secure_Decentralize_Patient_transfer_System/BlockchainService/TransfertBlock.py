@@ -38,6 +38,9 @@ class TransfertBlock:
     def set_number_of_bed_hospital(self, hospital, number_of_bed):
         self.contract_object.functions.set_previous_block(hospital, number_of_bed).transact()
 
+    def add_service_count(self, service, number):
+        self.contract_object.functions.add_service_count(service, number).transact()
+
     def get_patients(self):
         return self.contract_object.functions.get_patients().call()
 
@@ -61,6 +64,9 @@ class TransfertBlock:
 
     def solution_filled(self):
         self.contract_object.functions.solution_filled().call()
+
+    def get_service_count(self):
+        return self.contract_object.functions.get_service_count().call()
 
     def EventFilter(self, name):
         if name=="ReadyForMining":

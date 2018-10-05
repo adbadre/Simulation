@@ -15,9 +15,9 @@ import matplotlib.pyplot as plt
 if __name__ == "__main__":
     acceptance_rate = []
     time_period = []
-    for k in range(0, 200):
+    for k in range(0, 1):
         time_period.append(k+1)
-        hospital_info = SystemInfo(Web3(Web3.IPCProvider('\\\\.\\pipe\\geth.ipc')))
+        hospital_info = SystemInfo(Web3(Web3.IPCProvider('\\\\.\\pipe\\geth.ipc')),4)
         patient = PatientHandler()
         physician = hospital_info.physician
 
@@ -51,30 +51,49 @@ if __name__ == "__main__":
         print(patient_physician)
         '''number of patient by physician'''
         patient_by_physician = [15 for _ in physician]
-        print(patient_by_physician)
-        values = [(100-x)/100 for x in range(0, 101)]
-
-        Feasible = False
-        i = 0
-        while Feasible == False:
-            print("Acceptance Rate="+str(values[i]))
-            a = Assignment(patient, physician, patient_physician,
-                           hospitals, hospitals_service, ambulance_cost.ambulance_cost,
-                           cost_loosing_patient,
-                           bed_hospital, patient_by_physician,
-                           hospital_info.physician_hospital_service, values[i])
-            Feasible=a.fit(0.5)
-            print(Feasible)
-            if Feasible == False:
-                print()
-                if i == len(values)-1:
+        print(cost_loosing_patient)
+        costs_real=[]
+        for value in cost_loosing_patient[0]:
+            if value < 10000000:
+                costs_real.append(value)
+                break
+        for value in cost_loosing_patient[1]:
+            if value < 10000000:
+                costs_real.append(value)
+                break
+        cost_loosing_patient = pd.DataFrame([np.array(costs_real)], index=["cost"],
+                                            columns=cost_loosing_patient.columns).T
+        print(cost_loosing_patient)
+        number1=0
+        number0=0
+        for p in patient:
+            i = 0
+            for v in patient_physician.loc[p,:]:
+                if v == 1:
+                    if i in hospital_info.physician_request(1):
+                        number1 += 1
+                    else:
+                        number0 += 1
                     break
-                else:
-                    print("relaunch")
-                    i = i+1
-            else:
-                acceptance_rate.append(values[i])
+                i += 1
 
-    fig, ax = plt.subplots(figsize=(20, 10))
-    ax.plot(time_period, acceptance_rate, color="red")
-    plt.show()
+        patient_service=pd.DataFrame([np.array([number0,number1])],index=["total"],columns=cost_loosing_patient.T.columns).T
+        #Physician service
+        physician_service0=[]
+        physician_service1 = []
+        for p in physician:
+            if p in hospital_info.physician_request(1):
+                physician_service1.append(p)
+            else:
+                physician_service0.append(p)
+
+        physician_service=[physician_service0,physician_service1]
+
+        a = Assignment(patient, physician, patient_physician,
+                       hospitals, hospitals_service, ambulance_cost.ambulance_cost,
+                       cost_loosing_patient,
+                       bed_hospital, patient_by_physician,
+                       hospital_info.physician_hospital_service,patient_service,physician_service)
+        a.fit(0.5)
+
+

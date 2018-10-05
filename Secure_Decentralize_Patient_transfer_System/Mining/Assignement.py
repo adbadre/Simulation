@@ -5,7 +5,7 @@ class Assignment:
 
     def __init__(self, patient, physician, physician_matched_patient, hospitals, service,
                  costs_ambulance, costs_of_loosing_patient, bed_hospital, patient_by_physician,
-                 physician_hospital, minimum_accaptance_rate):
+                 physician_hospital, patient_service,physician_service):
         self.patient = patient
         self.physician = physician
         self.physician_patient = physician_matched_patient  # Matrix
@@ -16,9 +16,10 @@ class Assignment:
         self.bed_hospital = bed_hospital  # matrix
         self.patient_by_physician = patient_by_physician  # vector physician and number
         self.physician_hospital = physician_hospital
-        self.minimum_acceptance_rate = minimum_accaptance_rate
         self.model = Model("Patient Assignment")
         self.model.setParam(GRB.Param.Threads, 8)
+        self.patient_service = patient_service
+        self.physician_service = physician_service
         self.X = {}
 
     # Variable definition
@@ -39,15 +40,24 @@ class Assignment:
                           for i in self.patient
                           for j in self.physician
                           for h in self.hospitals)
-
-            + (1 - w1) * quicksum((1 - self.X[i, j, h]) * self.costs_of_loosing_patient.loc[h, s]
-                                  for h in self.hospitals
+            + (1 - w1) * quicksum((self.patient_service.loc[s, 'total'] - quicksum(self.X[i, j, h]
+                                                                                   for i in self.patient
+                                                                                   for j in self.physician_service[s]
+                                                                                   for h in self.hospitals)
+                                   )
+                                  *
+                                  self.costs_of_loosing_patient.loc[s, "cost"]
                                   for s in self.service
-                                  for i in self.patient
-                                  for j in self.physician)
-
-            # + (sigma/2)*(np.linalg.norm(self.X-np.dot(F, Z)+Y/sigma)) ^ 2
+                                  )
         )
+
+    ''''+ (1 - w1) * (quicksum(( 1-self.X[i, j, h]) * self.costs_of_loosing_patient.loc[h, s]
+                                     for h in self.hospitals
+                                     for s in self.service
+                                     for i in self.patient
+                                     for j in self.physician_patient.loc[i, :]))
+
+               # + (sigma/2)*(np.linalg.norm(self.X-np.dot(F, Z)+Y/sigma)) ^ 2'''
 
     # Constraint definitions
     def set_constraints(self):
@@ -64,15 +74,15 @@ class Assignment:
                                          for h in self.hospitals
                                          for j in self.physician
                                          )
-                                <= 1 )
+                                <= 1)
                                for i in self.patient),
                               "Patient Must Be Assign Constraint with the right Physician at the right place")
 
         self.model.addConstrs(((self.X[i, j, h]
-                               ==
-                               self.X[i, j, h]
-                               * self.physician_patient.loc[i, j]
-                               ) for i in self.patient
+                                ==
+                                self.X[i, j, h]
+                                * self.physician_patient.loc[i, j]
+                                ) for i in self.patient
                                for h in self.hospitals
                                for j in self.physician),
                               "If Assigned , then have to be assigned with the good physician")
@@ -80,23 +90,14 @@ class Assignment:
         self.model.addConstrs(((self.X[i, j, h]
                                 ==
                                 quicksum(self.X[i, j, h]
-                                * self.physician_patient.loc[i, j]
-                                * self.physician_hospital.xs((h, s)).loc[j]
+                                         * self.physician_patient.loc[i, j]
+                                         * self.physician_hospital.xs((h, s)).loc[j]
                                          for s in self.service
                                          )
                                 ) for i in self.patient
                                for h in self.hospitals
                                for j in self.physician),
                               "If Assigned , then the physician must in the good hospital ")
-
-        self.model.addConstr(((quicksum(self.X[i, j, h]
-                                        for i in self.patient
-                                        for j in self.physician
-                                        for h in self.hospitals
-                                         )/float(len(self.patient))
-                                >= self.minimum_acceptance_rate)
-                               ),
-                              "Patient assignment rate must be superior to 30%")
 
         self.model.addConstrs(((quicksum(self.X[i, j, h]
                                          for i in self.patient

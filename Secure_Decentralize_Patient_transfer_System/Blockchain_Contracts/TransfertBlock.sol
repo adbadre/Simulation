@@ -34,6 +34,8 @@ contract TransfertBlock{
 
     mapping(address => uint128) number_of_bed_hospital;
 
+    uint[2] service_count=[0,0];
+
     constructor(address[] new_hospital_address_tab_real) public {
         hospital_address_tab_real=new_hospital_address_tab_real;
         for(uint16 i=0;i<hospital_address_tab_real.length;i++){
@@ -73,6 +75,10 @@ contract TransfertBlock{
        number_of_bed_hospital[hospital]=number_of_bed;
     }
 
+    function  add_service_count(uint service, uint number) public{
+        require(service<2);
+        service_count[service] += number;
+    }
 
 
     function set_previous_block(address new_previous_block) public{
@@ -128,6 +134,11 @@ contract TransfertBlock{
     function  get_number_of_bed_hospital(address hospital)public constant returns(uint128) {
        return number_of_bed_hospital[hospital];
     }
+
+    function  get_service_count() public constant returns(uint[2]) {
+       return service_count;
+    }
+
 
     function solution_filled() public{
         emit TransactionMined("Solution Mined");

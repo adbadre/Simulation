@@ -45,18 +45,19 @@ class Simulation:
         hospitals = self.PhysicianHospitalService.get_hospital()
         hospitals = [str(x) for x in hospitals]
         physicians = self.PhysicianHospitalService.get_physicians_tab()
+        service_requested = self.SystemInfo.hospitals_service.loc[self.w3.eth.accounts[hospital_number], 0]
+        service = 0
+        if service_requested == 0:
+            service = 1
+        transfer_block.add_service_count(service, number_of_patient)
         for i in range(0, number_of_patient):
             patient_id = int(str(hospital_number)+"0000"+str(i))
             # Patient Id
             transfer_block.add_patient(patient_id)
             patients.append(patient_id)
             # Matching
-            service_requested=self.SystemInfo.hospitals_service.loc[self.w3.eth.accounts[hospital_number], 0]
-            service = 0
-            if service_requested == 0:
-              service = 1
+
             physician_eligibles = self.PhysicianHospitalService.get_physician_service_hospital_by_service(service)
-            print(physician_eligibles)
             matching = Topsis(np.array([0.5, 0.8]), ["cosy", "beautiful"], physician_eligibles, ["e1", "e2", "e3"],
                               patient_id, str(service)).fit()
             patient_physician = pd.DataFrame(index=physicians)
@@ -74,7 +75,7 @@ class Simulation:
         self.PhysicianHospitalService.set_number_of_bed_per_hospital(self.w3.eth.accounts[hospital_number],50)
         for service_id in services:
             transfer_block.set_cost_of_loosing_patient_by_id(self.w3.eth.accounts[hospital_number],
-                                                             service_id,  2000)
+                                                             service_id,  500)
         transfer_block.add_hospital(self.w3.eth.accounts[hospital_number])
         print("Hospital Agent "+str(hospital_number) +" done")
 
@@ -157,30 +158,43 @@ class Simulation:
             patient_by_physician.append(self.PhysicianHospitalService.get_number_of_patient_per_physician_by_id(i))
         patient_by_physician = pd.DataFrame(patient_by_physician, index=physicians).T
 
-        feasible = False
-        iteration = 0
-        acceptance_rate = [(100 - x) / 100 for x in range(0, 101)]
-        self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
-        self.w3.miner.stop()
-        while not feasible:
-            print("Acceptance Rate=" + str(acceptance_rate[iteration]))
-        # solve problem
-            a = Assignment(patients, physicians, patient_matched_physician,
-                           hospitals, range(len(hospital_service[0])), ambulance_cost,
-                           cost_loosing_patient,
-                           bed_hospital, patient_by_physician,
-                           hospital_service_physician, acceptance_rate[iteration])
+        costs_real = []
+        for value in cost_loosing_patient[0]:
+            if value < 10000000:
+                costs_real.append(value)
+                break
+        for value in cost_loosing_patient[1]:
+            if value < 10000000:
+                costs_real.append(value)
+                break
+        cost_loosing_patient = pd.DataFrame([np.array(costs_real)], index=["cost"],
+                                            columns=cost_loosing_patient.columns).T
+        print(cost_loosing_patient)
+        patient_service = transfer_block.get_service_count()
 
-            feasible = a.fit(0.5)
-            if not feasible:
-
-                if iteration == len(acceptance_rate)-1:
-                    break
-                else:
-                    print("Relaunch")
-                    iteration += 1
+        patient_service = pd.DataFrame(np.array([patient_service]), index=["total"],
+                                       columns=cost_loosing_patient.T.columns).T
+        print(patient_service)
+        # Physician service
+        physician_service0 = []
+        physician_service1 = []
+        for p in physicians:
+            if p in self.PhysicianHospitalService.get_physician_service_hospital_by_service(1):
+                physician_service1.append(p)
             else:
-                self.acceptance_rate_values.append(acceptance_rate[iteration])
+                physician_service0.append(p)
+
+        physician_service = [physician_service0, physician_service1]
+        print(physician_service)
+
+        self.w3.miner.stop()
+        a = Assignment(patients, physicians, patient_matched_physician,
+                       hospitals, range(len(hospital_service[0])), ambulance_cost,
+                       cost_loosing_patient,
+                       bed_hospital, patient_by_physician,
+                       hospital_service_physician,patient_service,physician_service)
+
+        a.fit(0.5)
 
         print("Mining Over")
         self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
@@ -224,6 +238,6 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    s = Simulation(5, 4, 50)
+    s = Simulation(1, 9, 20)
     s.run_assignment_rate()
     s.plot_assignment_rate()

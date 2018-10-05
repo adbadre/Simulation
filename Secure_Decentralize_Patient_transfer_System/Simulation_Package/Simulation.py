@@ -239,6 +239,6 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    s = Simulation(1, 9, 20)
+    s = Simulation(1, 3, 20)
     s.run_assignment_rate()
     s.plot_assignment_rate()

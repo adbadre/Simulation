@@ -109,10 +109,18 @@ class Assignment:
 
     # Solution displaying
     def display_sol(self):
+        yes = 0
+        no = 0
         try:
             for v in self.model.getVars():
                 if v.x == 1:
+                    yes += 1
                     print(v.varName, v.x)
+                else:
+                    no += 1
+            print("Assigned:"+str(yes))
+            print("Not Assigned:"+str(no))
+            print("Rate:"+str(yes/float(yes+no)))
             return True
         except Exception:
             print("No Solution")

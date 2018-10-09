@@ -57,6 +57,13 @@ class SystemInfo:
         self.bed_hospital = pd.DataFrame(np.random.randint(0, 1000, size=(1, len(self.hospitals))),
                                          columns=self.hospitals)
 
+        self.miles_distance = pd.DataFrame(np.random.randint(10, 20, size=(number_of_hospital,
+                                                                           number_of_hospital)),
+                                           index=self.hospitals, columns=self.hospitals)
+
+        for hospital in self.hospitals:
+            self.miles_distance.loc[hospital, hospital] = 5000000
+
     def physician_request(self, specialty):
         idx = pd.IndexSlice
         data = self.physician_hospital_service[self.physician_hospital_service.loc[idx[:, specialty], :]>0.5]

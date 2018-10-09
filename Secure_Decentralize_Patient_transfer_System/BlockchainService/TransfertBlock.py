@@ -15,8 +15,12 @@ class TransfertBlock:
         self.contract_object = w3.eth.contract(address=self.contract_info[0], abi=self.contract_info[1])
 
     def add_hospital(self, new_hospital_for_transaction):
-        transaction_hash=self.contract_object.functions.add_hospital(new_hospital_for_transaction).transact()
-        self.w3.eth.waitForTransactionReceipt(transaction_hash, timeout=600)
+        self.contract_object.functions.add_hospital(new_hospital_for_transaction).transact()
+
+    def add_hospital_wait(self, new_hospital_for_transaction):
+        transaction_hash = self.contract_object.functions.add_hospital(new_hospital_for_transaction).transact()
+        self.w3.eth.waitForTransactionReceipt(transaction_hash, timeout=100000)
+
     def add_patient(self, patient_id):
         self.contract_object.functions.add_patient(patient_id).transact()
 

@@ -22,7 +22,7 @@ class BlockchainGenesis:
         # Set physician
         for physician in system_info.physician:
             physician_tab.append(physician)
-            self.PhysicianHospitalService.set_number_of_patient_per_physician(physician, 15)
+            self.PhysicianHospitalService.set_number_of_patient_per_physician(physician, 5)
         self.PhysicianHospitalService.set_physicians_tab(physician_tab)
         # Set the matrix hospital service physician
         idx = IndexSlice

@@ -1,11 +1,11 @@
 from gurobipy import *
-
+import random
 
 class Assignment:
 
     def __init__(self, patient, physician, physician_matched_patient, hospitals, service,
                  costs_ambulance, costs_of_loosing_patient, bed_hospital, patient_by_physician,
-                 physician_hospital, patient_service,physician_service):
+                 physician_hospital, patient_service,physician_service, *args):
         self.patient = patient
         self.physician = physician
         self.physician_patient = physician_matched_patient  # Matrix
@@ -17,7 +17,12 @@ class Assignment:
         self.patient_by_physician = patient_by_physician  # vector physician and number
         self.physician_hospital = physician_hospital
         self.model = Model("Patient Assignment")
-        self.model.setParam(GRB.Param.Threads, 8)
+        self.time = False
+        if len(args) == 0:
+            self.model.setParam(GRB.Param.Threads, 8)
+        else:
+            self.model.setParam(GRB.Param.Threads, args[0])
+            self.time = True
         self.patient_service = patient_service
         self.physician_service = physician_service
         self.X = {}
@@ -110,25 +115,32 @@ class Assignment:
     # Solution displaying
     def display_sol(self):
         yes = 0
-        no = 0
         try:
             for v in self.model.getVars():
                 if v.x == 1:
-                    yes += 1
-                    print(v.varName, v.x)
-                else:
-                    no += 1
+                    assigned = True
+                    physician_acceptance = random.random()
+                    if physician_acceptance < 0.05:
+                        assigned = False
+                    if assigned:
+                        yes += 1
+                        print(v.varName)
+                    else:
+                        print(v.varName, "Rejected!!")
             print("Assigned:"+str(yes))
-            print("Not Assigned:"+str(no))
-            print("Rate:"+str(yes/float(yes+no)))
-            return True
+            assignment = yes/float(len(self.patient))
+            print("Rate:"+str(yes/float(len(self.patient))))
         except Exception:
+            assignment = 0
             print("No Solution")
-            return False
+        return assignment
 
     def fit(self, w1):
         self.set_variable()
         self.set_objective_function(w1)
         self.set_constraints()
         self.model.optimize()
-        return self.display_sol()
+        if not self.time:
+            return self.display_sol()
+        else:
+            return self.model.Runtime

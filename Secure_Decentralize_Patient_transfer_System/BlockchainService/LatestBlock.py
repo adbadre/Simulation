@@ -1,5 +1,4 @@
 from BlockchainService.ContractFactory import ContractFactory
-
 class LatestBlock:
     __LatestBlock_object = None
     __contract_object = None

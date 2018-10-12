@@ -213,21 +213,21 @@ class Simulation:
                            hospital_service_physician, patient_service, physician_service)
 
             self.acceptance_rate_values.append(a.fit(0.5))
+            self.w3.miner.start(8)
         else:
-            time.sleep(10)
 
-            a = Assignment(patients, physicians, patient_matched_physician,
-                           hospitals, range(len(hospital_service[0])), ambulance_cost,
-                           cost_loosing_patient,
-                           bed_hospital, patient_by_physician,
-                           hospital_service_physician, patient_service, physician_service, args[0])
-            elapsed_time = a.fit(0.5)
-            self.time.append(elapsed_time)
-            self.number_of_threads.append(args[0])
+            for i in range(10):
+                a = Assignment(patients, physicians, patient_matched_physician,
+                               hospitals, range(len(hospital_service[0])), ambulance_cost,
+                               cost_loosing_patient,
+                               bed_hospital, patient_by_physician,
+                               hospital_service_physician, patient_service, physician_service, args[0])
+                elapsed_time = a.fit(0.5)
+                args[1].append(elapsed_time)
 
         print("Mining Over")
 
-        self.w3.miner.start(8)
+
 
     def run_assignment_rate(self):
         self.init_simulation()
@@ -258,29 +258,28 @@ class Simulation:
             if hospital_number == self.number_of_hospital - 1:
                 last = True
             self.hospital_agent(self.number_of_patient_per_hospital, hospital_number, last)
-        for number_of_thread in range(numbers_of_thread):
-            self.miner_agent(number_of_thread+1)
+        for number_of_thread in [0,7]:
+            result_thread=[]
+            self.number_of_threads.append(number_of_thread)
+            self.miner_agent(number_of_thread+1, result_thread)
+            self.time.append(result_thread)
 
     def plot_assignment_rate(self):
-        fig, ax = plt.subplots(figsize=(20, 10))
-        ax.plot(self.time_span, self.acceptance_rate_values, color="blue")
-        plt.title("Acceptance Rate for"+str(self.number_of_hospital)+" Hospitals by Hour ")
-        ax.set_ylabel('Acceptance Rate', fontsize=24)
-        ax.set_xlabel('Number of Hours', fontsize=24)
-        plt.show()
+        data = pd.DataFrame(self.acceptance_rate_values, index=self.time_span)
+        writer = pd.ExcelWriter('C:\\Users\\badre\\OneDrive\\Bureau\\theses\\result_assignment_rate.xlsx')
+        data.to_excel(writer, 'Results')
+        writer.save()
 
     def plot_computational_time(self):
-        fig, ax = plt.subplots(figsize=(20, 10))
-        ax.plot(self.number_of_threads, self.time, color="red")
-        plt.title("Time of solving vs power of computation ")
-        ax.set_ylabel('Time', fontsize=24)
-        ax.set_xlabel('Number of Threads', fontsize=24)
-        plt.show()
+        data = pd.DataFrame(self.time, index=self.number_of_threads)
+        writer = pd.ExcelWriter('C:\\Users\\badre\\OneDrive\\Bureau\\theses\\result_computation.xlsx')
+        data.to_excel(writer, 'Results')
+        writer.save()
 
 
 if __name__ == "__main__":
-    s = Simulation(24, 9, 5)
-    s.run_assignment_rate()
-    # s.run_computation_power(8)
-    s.plot_assignment_rate()
-    # s.plot_computational_time()
+    s = Simulation(24, 9, 30)
+    #s.run_assignment_rate()
+    s.run_computation_power(8)
+    #s.plot_assignment_rate()
+    s.plot_computational_time()

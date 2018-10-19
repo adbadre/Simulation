@@ -5,7 +5,7 @@ class Assignment:
 
     def __init__(self, patient, physician, physician_matched_patient, hospitals, service,
                  costs_ambulance, costs_of_loosing_patient, bed_hospital, patient_by_physician,
-                 physician_hospital, patient_service,physician_service, *args):
+                 physician_hospital, patient_service, physician_service, *args):
         self.patient = patient
         self.physician = physician
         self.physician_patient = physician_matched_patient  # Matrix
@@ -81,7 +81,7 @@ class Assignment:
                                          )
                                 <= 1)
                                for i in self.patient),
-                              "Patient Must Be Assign Constraint with the right Physician at the right place")
+                              "Patient Can Be Assign Constraint")
 
         self.model.addConstrs(((self.X[i, j, h]
                                 ==

@@ -14,7 +14,6 @@ import random
 import matplotlib.pyplot as plt
 
 
-
 class Simulation:
 
     def __init__(self, time_span, number_of_hospital, number_of_patient_per_hospital):
@@ -30,9 +29,19 @@ class Simulation:
         self.number_of_patient_per_hospital = number_of_patient_per_hospital
         self.number_of_threads = []
         self.time = []
+        self.number_of_hospitals = []
+        self.result = []
 
     def init_simulation(self):
         self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
+        self.genesis = BlockchainGenesis().genesis(self.w3, self.SystemInfo)
+        self.LatestBlock = self.genesis['latest_block']
+        self.PhysicianHospitalService = self.genesis['physician_hospital_service']
+        print("Simulation Initiated")
+
+    def init_simulation_computation(self, number_of_hospital):
+        self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
+        self.SystemInfo = SystemInfo(self.w3, number_of_hospital)
         self.genesis = BlockchainGenesis().genesis(self.w3, self.SystemInfo)
         self.LatestBlock = self.genesis['latest_block']
         self.PhysicianHospitalService = self.genesis['physician_hospital_service']
@@ -89,7 +98,10 @@ class Simulation:
             transfer_block.set_ambulance_cost(patient_id, ambulance_info)
 
         services = self.PhysicianHospitalService.get_hospital_service(self.w3.eth.accounts[hospital_number])
-        self.PhysicianHospitalService.set_number_of_bed_per_hospital(self.w3.eth.accounts[hospital_number],50)
+        # Bed Per Hospitals
+        self.PhysicianHospitalService.set_number_of_bed_per_hospital(self.w3.eth.accounts[hospital_number],
+                                                                     random.randint(5, 20))
+        # Cost of loosing patient
         for service_id in services:
             transfer_block.set_cost_of_loosing_patient_by_id(self.w3.eth.accounts[hospital_number],
                                                              service_id,  800)
@@ -162,6 +174,7 @@ class Simulation:
         ambulance_cost = []
         for patient in patients:
             ambulance_cost.append(transfer_block.get_ambulance_cost_by_id(patient))
+        print(ambulance_cost)
         ambulance_cost = pd.DataFrame(ambulance_cost, index=patients, columns=hospitals)
 
         # Topsis result for each patient with physician with specialty =>1. 0 for the others
@@ -213,10 +226,9 @@ class Simulation:
                            hospital_service_physician, patient_service, physician_service)
 
             self.acceptance_rate_values.append(a.fit(0.5))
-            self.w3.miner.start(8)
         else:
 
-            for i in range(10):
+            for i in range(5):
                 a = Assignment(patients, physicians, patient_matched_physician,
                                hospitals, range(len(hospital_service[0])), ambulance_cost,
                                cost_loosing_patient,
@@ -224,6 +236,8 @@ class Simulation:
                                hospital_service_physician, patient_service, physician_service, args[0])
                 elapsed_time = a.fit(0.5)
                 args[1].append(elapsed_time)
+                self.result.append(elapsed_time)
+        self.w3.miner.start(8)
 
         print("Mining Over")
 
@@ -231,7 +245,6 @@ class Simulation:
 
     def run_assignment_rate(self):
         self.init_simulation()
-
         for times in self.time_span:
             print("Time:"+str(times))
             CurrentTransferBLock = TransfertBlock(self.w3, self.SystemInfo.hospitals)
@@ -247,22 +260,26 @@ class Simulation:
             self.w3.personal.unlockAccount(self.w3.eth.accounts[0], '')
             CurrentTransferBLock.set_previous_block(self.LatestBlock.get_potential_block_address())
 
-    def run_computation_power(self, numbers_of_thread):
-        self.init_simulation()
-        CurrentTransferBLock = TransfertBlock(self.w3, self.SystemInfo.hospitals)
-        self.LatestBlock.set_potential_block_address(CurrentTransferBLock.contract_info[0])
-        self.TransferBLockABI = CurrentTransferBLock.contract_info[1]
-        last = False
-        for hospital_number in range(0, self.number_of_hospital):
-            random.seed(8750)
-            if hospital_number == self.number_of_hospital - 1:
-                last = True
-            self.hospital_agent(self.number_of_patient_per_hospital, hospital_number, last)
-        for number_of_thread in [0,7]:
-            result_thread=[]
-            self.number_of_threads.append(number_of_thread)
-            self.miner_agent(number_of_thread+1, result_thread)
-            self.time.append(result_thread)
+    def run_computation_power(self):
+        for hospitals in range(4, self.number_of_hospital+1, 4):
+            print("Number of Hospitals:"+str(hospitals))
+            self.init_simulation_computation(hospitals)
+            CurrentTransferBLock = TransfertBlock(self.w3, self.SystemInfo.hospitals)
+            self.LatestBlock.set_potential_block_address(CurrentTransferBLock.contract_info[0])
+            self.TransferBLockABI = CurrentTransferBLock.contract_info[1]
+            last = False
+            for hospital_number in range(0, hospitals):
+                random.seed(8750)
+                if hospital_number == hospitals-1:
+                    last = True
+                self.hospital_agent(self.number_of_patient_per_hospital, hospital_number, last)
+            for number_of_thread in [0]:
+                result_thread = []
+                self.number_of_threads.append(number_of_thread)
+                self.miner_agent(number_of_thread+1, result_thread)
+                self.time.append(self.result)
+                self.result = []
+                self.number_of_hospitals.append(hospitals)
 
     def plot_assignment_rate(self):
         data = pd.DataFrame(self.acceptance_rate_values, index=self.time_span)
@@ -271,15 +288,15 @@ class Simulation:
         writer.save()
 
     def plot_computational_time(self):
-        data = pd.DataFrame(self.time, index=self.number_of_threads)
+        data = pd.DataFrame(self.time, index=self.number_of_hospitals)
         writer = pd.ExcelWriter('C:\\Users\\badre\\OneDrive\\Bureau\\theses\\result_computation.xlsx')
         data.to_excel(writer, 'Results')
         writer.save()
 
 
 if __name__ == "__main__":
-    s = Simulation(24, 9, 30)
+    s = Simulation(24, 20, 30)
     #s.run_assignment_rate()
-    s.run_computation_power(8)
+    s.run_computation_power()
     #s.plot_assignment_rate()
     s.plot_computational_time()

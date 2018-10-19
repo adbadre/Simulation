@@ -6,7 +6,7 @@ import random
 class SystemInfo:
 
     def __init__(self, w3, number_of_hospital):
-        self.physician = range(0, number_of_hospital*4)
+        self.physician = range(0, number_of_hospital*3)
         self.w3 = w3
         self.hospitals = [w3.eth.accounts[i] for i in range(number_of_hospital)]
         self.services = [0, 1]
@@ -46,8 +46,8 @@ class SystemInfo:
             else:
                 self.physician_hospital_service.xs((self.hospitals[h], 0)).loc[ph] = 1
 
-        self.cost_loosing_patient = pd.DataFrame([[400 for _ in range(len(self.hospitals))],
-                                                  [600 for _ in range(len(self.hospitals))]],
+        self.cost_loosing_patient = pd.DataFrame([[800 for _ in range(len(self.hospitals))],
+                                                  [800 for _ in range(len(self.hospitals))]],
                                                  index=self.services, columns=self.hospitals).T
         for i in self.hospitals:
             for j in self.services:

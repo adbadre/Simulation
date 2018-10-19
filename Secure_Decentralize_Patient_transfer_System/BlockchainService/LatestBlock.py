@@ -7,7 +7,7 @@ class LatestBlock:
 
     @staticmethod
     def get_instance(*args):
-        if LatestBlock.__contract_object is None:
+        if LatestBlock.__contract_object is None or len(args) > 0:
             LatestBlock(args[0], args[1])
         return LatestBlock.__LatestBlock_object
 

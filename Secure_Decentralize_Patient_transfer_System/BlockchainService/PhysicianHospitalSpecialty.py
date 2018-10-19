@@ -9,7 +9,7 @@ class PhysicianHospitalService:
 
     @staticmethod
     def get_instance(*args):
-        if PhysicianHospitalService.__contract_object is None:
+        if PhysicianHospitalService.__contract_object is None or len(args) > 0:
             PhysicianHospitalService(args[0], args[1])
         return PhysicianHospitalService.__PhysicianHospitalService_object
 

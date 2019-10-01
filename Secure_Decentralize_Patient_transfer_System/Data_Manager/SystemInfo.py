@@ -15,8 +15,6 @@ class SystemInfo:
         self.hospitals_service = pd.DataFrame(data=np.array([a, a2]).T,
                                               index=self.hospitals, columns=self.services) # wont be in at the end
         # Create random assignation for physicians
-
-
         label1 = []
         label2 = []
         i = 0
@@ -39,13 +37,15 @@ class SystemInfo:
                                                            labels=[label1, label2]
                                                        ),
                                                        columns=self.physician)
+        #Randomly distributing physician through the network
         for ph in self.physician:
             h = random.randint(0, len(self.hospitals) - 1)
             if a[h] == 0:
                 self.physician_hospital_service.xs((self.hospitals[h], 1)).loc[ph] = 1
             else:
                 self.physician_hospital_service.xs((self.hospitals[h], 0)).loc[ph] = 1
-
+        
+        #Set cost of loosing patient matrix
         self.cost_loosing_patient = pd.DataFrame([[800 for _ in range(len(self.hospitals))],
                                                   [800 for _ in range(len(self.hospitals))]],
                                                  index=self.services, columns=self.hospitals).T
@@ -53,14 +53,15 @@ class SystemInfo:
             for j in self.services:
                 if self.hospitals_service.loc[i, j] == 0:
                     self.cost_loosing_patient.loc[i, j] = 5000000000000000000
-
+        
+        #Set bed per hospitals of the network
         self.bed_hospital = pd.DataFrame(np.random.randint(0, 1000, size=(1, len(self.hospitals))),
                                          columns=self.hospitals)
-
+        
+        #Set distance matrix between hospitals
         self.miles_distance = pd.DataFrame(np.random.randint(10, 20, size=(number_of_hospital,
                                                                            number_of_hospital)),
                                            index=self.hospitals, columns=self.hospitals)
-
         for hospital in self.hospitals:
             self.miles_distance.loc[hospital, hospital] = 5000000
 

@@ -1,4 +1,4 @@
-This folder contains the simulation environment for secure decnetralized patient assigment. 
+This folder contains the simulation environment for secure decentralized patient assigment. 
 
 Library : web3==4.6.0, getg==1.8.11, python==3.6.5,gurobi==8.0.1
 

@@ -1,11 +1,11 @@
 # Secure Decentralized Patient Assignment System
 
-** This folder contains the simulation environment for secure decentralized patient assigment.**
+**This folder contains the simulation environment for secure decentralized patient assigment.**
 
 Library : web3==4.6.0, geth==1.8.11, python==3.6.5,gurobi==8.0.1, xlsxwritter
 
 
-** To run the simulation: **
+**To run the simulation:**
   - Launch the ethereum blockchain on your device with local blockchain (See https://hackernoon.com/hands-on-creating-your-own-local-private-geth-node-beginner-friendly-3d45902cc612) 
   - Go to simulation_package
   - Open simulation.py

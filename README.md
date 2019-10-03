@@ -2,7 +2,7 @@
 
 **This folder contains the simulation environment for secure decentralized patient assigment.**
 
-Library : web3==4.6.0, geth==1.8.11, python==3.6.5,gurobi==8.0.1, xlsxwritter
+Libraries : web3==4.6.0, geth==1.8.11, python==3.6.5,gurobi==8.0.1, xlsxwritter
 
 
 **To run the simulation:**

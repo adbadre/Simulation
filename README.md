@@ -1,4 +1,4 @@
-# Badre, A., Mohebbi, S., Soltanisehat, L. (2019). Secure Decentralized Decisions to Enhance Coordination in Consolidated Hospital Systems, IISE Transactions on Healthcare Systems Engineering, DOI: 10.1080/24725579.2019.1680582
+**Badre, A., Mohebbi, S., Soltanisehat, L. (2019). Secure Decentralized Decisions to Enhance Coordination in Consolidated Hospital Systems, IISE Transactions on Healthcare Systems Engineering, DOI: 10.1080/24725579.2019.1680582**
 
 **Please cite the above article if you are using the codes and simualiton protocol.** 
 
